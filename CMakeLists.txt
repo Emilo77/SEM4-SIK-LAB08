@@ -1,16 +1,9 @@
 cmake_minimum_required (VERSION 3.1)
 
-set(CMAKE_C_FLAGS "-g -Wall")
+project(MIMUW_SIK_TCP_MULTICAST)
 
-# http://stackoverflow.com/questions/10555706/
-macro (add_executable _name)
-  _add_executable(${ARGV})
-  if (TARGET ${_name})
-    target_link_libraries(${_name} err)
-  endif()
-endmacro()
-
-add_library(err err.c)
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_FLAGS "-g -Wall -Wextra")
 
 add_executable(multi-recv multi-recv.c)
 add_executable(multi-recv6 multi-recv6.c)
