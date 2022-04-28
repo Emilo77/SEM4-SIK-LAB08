@@ -18,9 +18,9 @@ Aby nadawca mógł wysłać komunikat rozgłoszeniowy korzystając z danego gnia
 W IPv6 **nie ma możliwości rozgłaszania**.
 Rozsyłanie grupowe (ang. multicast)
 
-Pula adresów 224.0.0.1 – 239.255.255.255 przewidziana jest do wykorzystania jako adresy grupowe dla IPv4. Wiele interfejsów może mieć przydzielony adres z tej puli. Intencja jest taka, aby można było wysłać kopię datagramu jednocześnie do wszystkich interfejsów współdzielących ten sam adres grupowy.
+Pula adresów **224.0.0.1** – **239.255.255.255** przewidziana jest do wykorzystania jako adresy grupowe dla IPv4. Wiele interfejsów może mieć przydzielony adres z tej puli. Intencja jest taka, aby można było wysłać kopię datagramu jednocześnie do wszystkich interfejsów współdzielących ten sam adres grupowy.
 
-Adresy grupowe dla IPv6 przydziela się z puli ff00::/8, czyli są to adresy, które mają jedynki na początkowych 8 bitach. Pula ta jest podzielona na części dla różnych obszarów rozgłaszania ([szczegóły](https://datatracker.ietf.org/doc/html/rfc4291#section-2.7)).
+Adresy grupowe dla IPv6 przydziela się z puli **ff00::/8**, czyli są to adresy, które mają jedynki na początkowych 8 bitach. Pula ta jest podzielona na części dla różnych obszarów rozgłaszania ([szczegóły](https://datatracker.ietf.org/doc/html/rfc4291#section-2.7)).
 
 Aby nadawca mógł skorzystać z rozsyłania grupowego musi najpierw przyłączyć się do grupy rozsyłania grupowego związanej z konkretnym adresem. W tym celu również wykorzystuje się opcje gniazd (szczegóły w pkt. 4).
 
