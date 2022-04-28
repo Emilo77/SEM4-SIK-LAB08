@@ -150,6 +150,16 @@ inline static void send_message(int socket_fd, const void *message, size_t lengt
     ENSURE(sent_length == (ssize_t) length);
 }
 
+inline static void send_message_address(int socket_fd, const void *message, size_t length, int flags, struct sockaddr *address, socklen_t addr_len) {
+  errno = 0;
+  ssize_t sent_length = sendto(socket_fd, message, length, flags, address, addr_len);
+  if (sent_length < 0) {
+    printf("test\n");
+    PRINT_ERRNO();
+  }
+  ENSURE(sent_length == (ssize_t) length);
+}
+
 inline static size_t receive_message(int socket_fd, void *buffer, size_t max_length, int flags) {
     errno = 0;
     ssize_t received_length = recv(socket_fd, buffer, max_length, flags);

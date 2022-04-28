@@ -16,35 +16,35 @@
 #define SLEEP_TIME 1
 #define CONNECTIONS 2
 #define TIMEOUT 3000
+#define TEMP_BUFF_SIZE 64
 
-static bool finish = false;
 char buffer[BSIZE];
 
-void send_GET_TIME(int sockfd, int counter) {
+void send_GET_TIME(int sockfd, int counter, struct sockaddr_in6 *dest_addr) {
   char *message = "GET TIME";
   strcpy(buffer, message);
-  send_message(sockfd, buffer, strlen(message), NO_FLAGS);
+  send_message_address(sockfd, buffer, strlen(message), NO_FLAGS,
+                       (struct sockaddr *)dest_addr, sizeof(*dest_addr));
   printf("Sending request [%d]\n", counter + 1);
 }
 
-void receive_time(int sockfd) {
-
-  size_t received_length =
-      receive_message(sockfd, buffer, sizeof(buffer), NO_FLAGS);
+void receive_GET_TIME(int sockfd) {
+  char temp_buffer[TEMP_BUFF_SIZE];
+  struct sockaddr server_addr;
+  socklen_t add_len;
+  size_t received_length = receive_message_address(
+      sockfd, buffer, sizeof(buffer), NO_FLAGS, &server_addr, &add_len);
   if (received_length < 0) {
     PRINT_ERRNO();
   }
-  printf("Response from: ???\n"); // todo: print remote ip
+  printf("Response from: %s\n",
+         inet_ntop(AF_INET6, &server_addr, temp_buffer, sizeof(temp_buffer)));
   printf("Received time: %.*s\n", (int)received_length, buffer);
 }
 
 int main(int argc, char *argv[]) {
   struct sockaddr_in6 remote_address;
   struct pollfd descriptor[CONNECTIONS];
-
-  /* zmienne obsługujące komunikację */
-
-  time_t time_buffer;
 
   /* parsowanie argumentów programu */
   if (argc != 3)
@@ -60,7 +60,7 @@ int main(int argc, char *argv[]) {
 
   descriptor[0].fd = open_udp_ip6_socket();
 
-  /* ustawienie liczby skoków  dla datagramów rozsyłanych do grupy */
+  /* ustawienie liczby skoków dla datagramów rozsyłanych do grupy */
   int optval = HOPS_VALUE;
   CHECK_ERRNO(setsockopt(descriptor[0].fd, SOL_IPV6, IPV6_MULTICAST_HOPS,
                          (void *)&optval, sizeof optval));
@@ -72,17 +72,11 @@ int main(int argc, char *argv[]) {
   CHECK_ERRNO(
       inet_pton(AF_INET6, remote_colon_address, &remote_address.sin6_addr));
 
-  connect_socket_ip6(descriptor[0].fd, &remote_address);
+  // connect_socket_ip6(descriptor[0].fd, &remote_address);
 
-  //  /* radosne rozgłaszanie czasu */
-  //  for (int i = 0; i < REPEAT_COUNT; ++i) {
-  //    time(&time_buffer);
-  //    size_t length = strnlen(buffer, BSIZE);
-  //    send_message(socket_fd, buffer, length, NO_FLAGS);
-  //  }
   int counter = 0;
   do {
-    send_GET_TIME(descriptor[0].fd, counter);
+    send_GET_TIME(descriptor[0].fd, counter, &remote_address);
 
     for (int i = 0; i < CONNECTIONS; ++i) {
       descriptor[i].revents = 0;
@@ -93,7 +87,7 @@ int main(int argc, char *argv[]) {
       PRINT_ERRNO();
     } else if (poll_status > 0) {
       if (descriptor[0].revents & POLLIN) {
-        receive_time(descriptor[0].fd);
+        receive_GET_TIME(descriptor[0].fd);
         break;
       }
     }
