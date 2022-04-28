@@ -72,7 +72,7 @@ int main(int argc, char *argv[]) {
   CHECK_ERRNO(
       inet_pton(AF_INET6, remote_colon_address, &remote_address.sin6_addr));
 
-  // connect_socket_ip6(descriptor[0].fd, &remote_address);
+  //  connect_socket_ip6(descriptor[0].fd, &remote_address);
 
   int counter = 0;
   do {

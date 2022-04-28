@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
 
     int socket_fd = open_udp_ip6_socket();
 
-    /* ustawienie liczby skoków  dla datagramów rozsyłanych do grupy */
+    /* ustawienie liczby skoków dla datagramów rozsyłanych do grupy */
     int optval = HOPS_VALUE;
     CHECK_ERRNO(setsockopt(socket_fd, SOL_IPV6, IPV6_MULTICAST_HOPS, (void *) &optval, sizeof optval));
 

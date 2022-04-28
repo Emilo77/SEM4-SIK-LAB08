@@ -14,17 +14,16 @@
 #define REPEAT_COUNT 30
 char buffer[BSIZE];
 
-void send_time(int socket_fd, struct sockaddr *client_addr,
+void send_time(int sockfd, struct sockaddr *client_addr,
                socklen_t client_addr_len) {
-  char buf[256];
+  char buf[64];
+  printf("Request from: %s\n",
+         inet_ntop(AF_INET6, &client_addr, buf, sizeof(buf)));
   time_t time_buffer;
   time(&time_buffer);
   strncpy(buffer, ctime(&time_buffer), BSIZE);
   size_t length = strnlen(buffer, BSIZE);
-  send_message_address(socket_fd, buffer, length, NO_FLAGS, client_addr,
-                       client_addr_len);
-  printf("Request from: %s\n",
-         inet_ntop(AF_INET6, client_addr, buf, sizeof(buf)));
+  sendto(sockfd, buffer, length, NO_FLAGS, client_addr, client_addr_len);
 }
 
 int main(int argc, char *argv[]) {
