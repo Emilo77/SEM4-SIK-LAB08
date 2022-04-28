@@ -105,7 +105,6 @@ gdzie level określa poziom (grupę) opcji:
 ### Opcje dotyczące rozgłaszania (wyłącznie IPv4)
 
 - Uaktywnienie rozgłaszania
-- 
 ```c
 optval = 1;
 setsockopt(sock, SOL_SOCKET, SO_BROADCAST, (void*)&optval, sizeof (optval))
@@ -114,7 +113,6 @@ setsockopt(sock, SOL_SOCKET, SO_BROADCAST, (void*)&optval, sizeof (optval))
 ### Opcje dotyczące rozsyłania grupowego
 
 - Dołączenie do grupy rozsyłania grupowego IPv4
-- 
 ```c
 struct ip_mreq ip_mreq;
 ip_mreq.imr_interface.s_addr = ...
