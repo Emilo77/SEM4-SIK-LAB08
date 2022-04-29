@@ -12,13 +12,11 @@
 
 #define BSIZE 1024
 #define REPEAT_COUNT 30
+#define ADD_LEN 64
 char buffer[BSIZE];
 
 void send_time(int sockfd, struct sockaddr *client_addr,
                socklen_t client_addr_len) {
-  char buf[64];
-  printf("Request from: %s\n",
-         inet_ntop(AF_INET6, &client_addr, buf, sizeof(buf)));
   time_t time_buffer;
   time(&time_buffer);
   strncpy(buffer, ctime(&time_buffer), BSIZE);
@@ -51,9 +49,12 @@ int main(int argc, char *argv[]) {
   /* czytanie tego, co odebrano */
   while (1) {
     struct sockaddr client_address;
-    socklen_t add_len;
+    socklen_t add_len = ADD_LEN;
     size_t received_length = receive_message_address(
         socket_fd, buffer, sizeof(buffer), NO_FLAGS, &client_address, &add_len);
+    char buf[64];
+    printf("Request from: %s\n",
+           inet_ntop(AF_INET6, &client_address, buf, sizeof(buf)));
     if (strncmp(buffer, "GET TIME", received_length) == 0) {
       send_time(socket_fd, &client_address, add_len);
     } else {
